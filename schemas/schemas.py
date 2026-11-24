@@ -12,6 +12,14 @@ class MecanicoResponse(MecanicoCreate):
 
     model_config = {"from_attributes": True}
 
+class MecanicoResumen(BaseModel):
+    id: int
+    nombre_completo: str 
+    especialidad: str 
+    activo: bool
+    
+    model_config = {"from_attributes": True}
+
 class OrdenCreate(BaseModel):
     placa: str = Field(..., min_length=5, max_length=6)
     modelo: str
@@ -28,3 +36,5 @@ class OrdenResponse(OrdenCreate):
     estado: str
     costo_reparacion: float
     mecanico: Optional[MecanicoResponse] = None
+    
+    model_config = {"from_attributes": True}
