@@ -37,13 +37,13 @@ async def crear_orden(orden: OrdenCreate, db: AsyncSession = Depends(obtener_bd)
     return nueva_orden
 
 @router.patch("/{orden_id}", response_model=OrdenResponse)
-async def actualizar_orden(orden_id: int, orden_patch: OrdenPatch, db: AsyncSession = Depends(obtener_bd)):
+async def actualizar_orden(orden_id: int, orden_patch: OrdenPatch, db: AsyncSession = Depends(obtener_bd),):
     resultado = await db.execute(select(OrdenModel).where(OrdenModel.id == orden_id))
     orden_db = resultado.scalar_one_or_none()
     if not orden_db:
         raise HTTPException(status_code=404, detail="Orden no encontrada")
 
-    datos = orden_patch.model_dump()
+    datos = orden_patch.model_dump(exclude_unset= True)
     for campo, valor in datos.items():
         setattr(orden_db, campo, valor)
 
