@@ -1,14 +1,13 @@
+from _collections_abc import AsyncGenerator
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 from core.config import settings
 
 engine = create_async_engine(settings.DATABASE_URL, echo=False)
-SessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
-Base = declarative_base()
+AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+class Base(DeclarativeBase):
+    pass
 
-async def obtener_bd():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        await db.close()
+async def obtener_bd() -> AsyncGenerator[AsyncSession,None]:
+    async with AsyncSessionLocal() as session:
+        yield session
